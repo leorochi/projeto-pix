@@ -10,8 +10,6 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
- 
-
 
   const [SignInWithEmailAndPassword, user, loading, error,
   ] = useSignInWithEmailAndPassword(auth);
