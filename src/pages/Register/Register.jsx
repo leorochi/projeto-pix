@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { app, auth, db } from '../../services/FirebaseConfig';
 import 'firebase/firestore';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import Login from '../Login/Login';
 
 const Register = () => {
 
@@ -15,8 +16,6 @@ const Register = () => {
 
    const usersCollectionRef = collection(db, 'users');
   
-  const transactionCollectionRef = collection(usersCollectionRef, 'transactions');
-  
 
   const [createUserWithEmailAndPassword, user, loading, error,] =
   useCreateUserWithEmailAndPassword(auth); 
@@ -24,12 +23,20 @@ const Register = () => {
   async function handleSignIn(e) {
     e.preventDefault();
     createUserWithEmailAndPassword(email, password);
-    await addDoc(usersCollectionRef, {
-     contaBancaria, saldo
-    })
+    const userRef = await addDoc(usersCollectionRef, {
+     email, contaBancaria, saldo
+    });
 
+    const userId = userRef.id;
 
+    const transactionCollectionRef = collection(db, `users/${userId}/transactions`);
+    await addDoc(transactionCollectionRef,{
+      tipo: '',
+      valor: 0
+    });
   }
+
+  if(user) return <Login/>
 
   return (
     <form onSubmit={handleSignIn}>

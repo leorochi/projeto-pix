@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, Route, Routes } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, Navigate, Route, Routes } from 'react-router-dom'
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '../../services/FirebaseConfig';
 import PaginaInicial from '../PaginaInicial.jsx/PaginaInicial';
@@ -9,8 +9,9 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
  
- 
+
 
   const [SignInWithEmailAndPassword, user, loading, error,
   ] = useSignInWithEmailAndPassword(auth);
@@ -18,10 +19,13 @@ const Login = () => {
   function handleSignIn(e) {
     e.preventDefault();
     SignInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+    })
   }
 
   if(loading) <p>Carregando...</p>
-  if(user) return <PaginaInicial/>
+  if(user) return <Navigate to='/paginainicial'/>
   
   return (
     <form onSubmit={handleSignIn}>
